@@ -5,6 +5,7 @@ import com.tr.obss.jss.jss_marketplace.model.User;
 import com.tr.obss.jss.jss_marketplace.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,20 +18,18 @@ public class UserController {
 
     private final UserService userService;
 
-    // TODO: check for admin role
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/all")
-    public List<User> getUsers(@RequestParam(value = "page", defaultValue = "0") Integer page,
-                               @RequestParam(value = "max_result", defaultValue = "10") Integer maxResult) {
+    public List<User> getAllUsers(@RequestParam(value = "page", defaultValue = "0") Integer page,
+                                  @RequestParam(value = "max_result", defaultValue = "10") Integer maxResult) {
         return userService.getUsers(page, maxResult);
     }
 
-    // TODO: check for admin role
     @PostMapping
     public User createUser(@RequestBody User user) {
         return userService.createNewUser(user);
     }
 
-    // TODO: check for admin role
     @PatchMapping
     public User updateUser(@RequestBody User user) {
         return userService.updateUser(user);
@@ -41,11 +40,13 @@ public class UserController {
         userService.deleteUserById(user.getId());
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/{id}/role")
     public void assignRole(@PathVariable Long id, @RequestBody Role userRole) {
         userService.addRole(id, userRole);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}/role")
     public void removeRole(@PathVariable Long id, @RequestBody Role userRole) {
         userService.removeRole(id, userRole);

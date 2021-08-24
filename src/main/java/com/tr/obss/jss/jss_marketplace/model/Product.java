@@ -25,7 +25,7 @@ public class Product extends BaseEntity {
     private String name;
 
     @URL
-    private String imageUrl;
+    private String imageUrl = "empty_box.jpeg";
 
     @NotNull
     private Integer price;
